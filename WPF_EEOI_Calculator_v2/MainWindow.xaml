@@ -1,0 +1,803 @@
+﻿<Window
+    x:Class="WPF_EEOI_Calculator_v2.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:WPF_EEOI_Calculator_v2" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="http://oxyplot.org/wpf" xmlns:sys="clr-namespace:System;assembly=mscorlib" Title="Tecnitas - EEOI Calculator v2.0" Width="1024" Height="768" MinWidth="500"
+    MinHeight="600"
+    DataContext="{Binding RelativeSource={RelativeSource Self}, Path=company}"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <!--  TAB CONTROL STYLE  -->
+        <Style TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Panel" Height="30" CornerRadius="15">
+                            <ContentPresenter>
+                                <ContentPresenter.Content>
+                                    <TextBlock
+                                        Name="Font" Margin="10,2" VerticalAlignment="Center" FontSize="14" FontWeight="Bold" Foreground="#FFEEEEEE"
+                                        Text="{TemplateBinding Header}" />
+                                </ContentPresenter.Content>
+                            </ContentPresenter>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Panel" Property="Background" Value="#FF565656" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="Panel" Property="Background" Value="White" />
+                                <Setter TargetName="Font" Property="Foreground" Value="DarkGray" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  BORDER STYLE  -->
+        <Style TargetType="Border">
+            <Setter Property="Background" Value="#FFEEECEC" />
+            <Setter Property="CornerRadius" Value="20" />
+        </Style>
+
+        <!--  DGV STYLE  -->
+        <Style x:Key="DataGridCellStyle1" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" SnapsToDevicePixels="True">
+                            <ContentPresenter VerticalAlignment="Center" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="SeaGreen" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static DataGrid.FocusBorderBrushKey}}" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="true" />
+                        <Condition Property="Selector.IsSelectionActive" Value="false" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="SeaGreen" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                </MultiTrigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  ListBox STYLE  -->
+        <Style x:Key="lbStyle1" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" SnapsToDevicePixels="True">
+                            <ContentPresenter VerticalAlignment="Center" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="SeaGreen" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static DataGrid.FocusBorderBrushKey}}" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="true" />
+                        <Condition Property="Selector.IsSelectionActive" Value="false" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="SeaGreen" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                </MultiTrigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  Value Converters  -->
+        <local:VesselTypeConverter x:Key="VesselTypeConverter" />
+
+    </Window.Resources>
+
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+            <StackPanel DockPanel.Dock="Left">
+                <Menu Background="#FF565656" FontSize="14" FontWeight="Bold" Foreground="White">
+                    <MenuItem Height="30" Padding="7,5,8,0" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Header="_File">
+                        <MenuItem x:Name="mnuNew" Click="mnuNew_Click" Foreground="#FF565656" Header="_New" />
+                        <MenuItem x:Name="mnuOpen" Click="mnuOpen_Click" Foreground="#FF565656" Header="_Open" />
+                        <MenuItem x:Name="mnuAppend" Click="mnuAppend_Click" Foreground="#FF565656" Header="_Append" />
+                        <MenuItem x:Name="mnuSave" Click="mnuSave_Click" Foreground="#FF565656" Header="_Save" />
+                        <MenuItem x:Name="mnuSaveAs" Click="mnuSaveAs_Click" Foreground="#FF565656" Header="_Save As" />
+                        <MenuItem Click="mnuExportXLS_Click" Foreground="#FF565656" Header="_Export" />
+                        <MenuItem x:Name="mnuExit" Click="mnuExit_Click" Foreground="#FF565656" Header="_Exit" />
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Right">
+                <Menu Height="30" Background="#FF565656" FlowDirection="RightToLeft" FontSize="14" FontWeight="Bold" Foreground="White">
+                    <MenuItem
+                        x:Name="mnuAbout" Height="30" Padding="7,5,8,0" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
+                        Click="mnuAbout_Click" Header="_About" />
+                    <MenuItem Height="30" Padding="7,5,8,0" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="mnuHelp_Click" Header="_Help" />
+                </Menu>
+            </StackPanel>
+
+
+        </DockPanel>
+        <TabControl x:Name="tcMain" SelectionChanged="tcMain_SelectionChanged">
+            <TabItem Header="Company">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Rectangle Width="12" Height="12" Margin="10,0,0,0" Fill="#FFCE1241" RadiusX="2" RadiusY="2" />
+                        <Label Margin="0,0,10,0" FontSize="14" FontWeight="Bold">
+                            Company and Vessels.
+                        </Label>
+                    </StackPanel>
+
+                    <Border Margin="10,0,10,10">
+                        <DockPanel Margin="20" LastChildFill="True">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
+
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.495*" MinWidth="200" />
+                                    <ColumnDefinition Width="0.01*" />
+                                    <ColumnDefinition Width="0.495*" MinWidth="200" />
+                                </Grid.ColumnDefinitions>
+
+                                <GridSplitter Grid.RowSpan="15" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+
+
+                                <Label Grid.Row="0" Grid.Column="0" Content="Company Name:" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <TextBox
+                                    x:Name="tbCompanyName" Grid.Row="1" Grid.Column="0" Height="30" VerticalContentAlignment="Center" TabIndex="1"
+                                    Text="{Binding CompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <Label Grid.Row="2" Grid.Column="0" Content="SEEMP Cycle:" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <TextBox
+                                    x:Name="tbSeempCycle" Grid.Row="3" Grid.Column="0" Height="30" VerticalContentAlignment="Center" TabIndex="1"
+                                    Text="{Binding SEEMPCycle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+                                <DockPanel Grid.Row="0" Grid.RowSpan="15" Grid.Column="2" Margin="0,0,0,10">
+                                    <Label Content="Vessels:" DockPanel.Dock="Top" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                    <Border CornerRadius="0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="10" ShadowDepth="8" Color="Gray" />
+                                        </Border.Effect>
+                                        <ListBox x:Name="lbVessels1" ItemContainerStyle="{StaticResource lbStyle1}" ItemsSource="{Binding Vessels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TabIndex="7">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <Label Content="{Binding VesselName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" />
+                                                        <Label Content="{Binding Voyages.Count}" ContentStringFormat="- Recorded voyages: {0}" Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Border>
+                                </DockPanel>
+
+                                <Label Grid.Row="4" Grid.Column="0" Content="Vessel Name:" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <TextBox
+                                    x:Name="tbVesselName" Grid.Row="5" Grid.Column="0" VerticalContentAlignment="Center"
+                                    DataContext="{Binding ElementName=lbVessels1, Path=SelectedItem}"
+                                    TabIndex="2"
+                                    Text="{Binding VesselName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                <Label Grid.Row="6" Grid.Column="0" Content="Type:" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <ComboBox
+                                    x:Name="cbType" Grid.Row="7" Grid.Column="0" Margin="2"
+                                    DataContext="{Binding ElementName=lbVessels1, Path=SelectedItem}"
+                                    FontWeight="Bold"
+                                    ItemsSource="{Binding Source={local:EnumBindingSource {x:Type local:VesselTypes}}}"
+                                    SelectedItem="{Binding VesselType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    TabIndex="3" />
+                                <Label Grid.Row="8" Grid.Column="0" Content="Flag:" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <TextBox
+                                    x:Name="tbFlag" Grid.Row="9" Grid.Column="0" VerticalContentAlignment="Center"
+                                    DataContext="{Binding ElementName=lbVessels1, Path=SelectedItem}"
+                                    TabIndex="4"
+                                    Text="{Binding Flag, Mode=TwoWay}" />
+                                <Label Grid.Row="10" Grid.Column="0" Content="IMO Number:" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <TextBox
+                                    x:Name="tbIMO" Grid.Row="11" Grid.Column="0" VerticalContentAlignment="Center"
+                                    DataContext="{Binding ElementName=lbVessels1, Path=SelectedItem}"
+                                    TabIndex="5"
+                                    Text="{Binding IMO, Mode=TwoWay}" />
+                                <Label Grid.Row="12" Grid.Column="0" Content="Gross Tonnage:" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <TextBox
+                                    x:Name="tbTonnage" Grid.Row="13" Grid.Column="0" VerticalContentAlignment="Center"
+                                    DataContext="{Binding ElementName=lbVessels1, Path=SelectedItem}"
+                                    TabIndex="6"
+                                    Text="{Binding Tonnage, Mode=TwoWay}" />
+                                <StackPanel Grid.Row="15" Grid.ColumnSpan="3" HorizontalAlignment="Center" Orientation="Horizontal">
+                                    <Button
+                                        x:Name="btnAddVessel" Width="100" Margin="5" Background="#FF565656" Click="btnAddVessel_Click" Content="Add"
+                                        FontSize="14" FontWeight="Bold" Foreground="White" TabIndex="8" />
+                                    <Button
+                                        x:Name="btnRemoveVessel" Width="100" Margin="5" Background="#FF565656" Click="btnRemoveVessel_Click" Content="Remove"
+                                        FontSize="14" FontWeight="Bold" Foreground="White" TabIndex="9" />
+                                </StackPanel>
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Voyages">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Rectangle Width="12" Height="12" Margin="10,0,0,0" Fill="#FFCE1241" RadiusX="2" RadiusY="2" />
+                        <Label Margin="0,0,10,0" Content="Vessels and Voyages." FontSize="14" FontWeight="Bold" />
+                    </StackPanel>
+                    <Border Margin="10,0,10,10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="8*" MinHeight="150" />
+                                <RowDefinition Height="5" />
+                                <RowDefinition Height="5*" MinHeight="150" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.7*" MinWidth="150" />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition Width="3*" MinWidth="300" />
+                            </Grid.ColumnDefinitions>
+
+                            <GridSplitter Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+                            <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" />
+
+                            <DockPanel Grid.Row="0" Grid.RowSpan="1" Grid.Column="0" LastChildFill="True">
+                                <DockPanel.Resources>
+                                    <Style TargetType="ListViewItem">
+                                        <Style.Triggers>
+                                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                                <Setter Property="Background" Value="LightBlue" />
+                                            </Trigger>
+                                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                <Setter Property="Background" Value="LightGray" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <DataTemplate DataType="system:String">
+                                        <!--  put your data template here  -->
+                                    </DataTemplate>
+
+                                </DockPanel.Resources>
+                                <Label Margin="10,10,10,0" DockPanel.Dock="Top" FontSize="14" FontWeight="Bold" Foreground="DarkGray">
+                                    Vessels:
+                                </Label>
+                                <Border Margin="10,0,10,10" CornerRadius="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="8" Color="Gray" />
+                                    </Border.Effect>
+                                    <DataGrid
+                                        x:Name="DGV0" AutoGenerateColumns="False" Background="#FFEEECEC" CanUserAddRows="False" CanUserDeleteRows="False"
+                                        CellStyle="{DynamicResource DataGridCellStyle1}"
+                                        ClipboardCopyMode="IncludeHeader"
+                                        HorizontalGridLinesBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                                        IsReadOnly="True"
+                                        ItemsSource="{Binding Vessels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        SelectionMode="Single"
+                                        VerticalGridLinesBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+
+                                        <!--  Resources  -->
+                                        <DataGrid.Resources>
+                                            <!--  DataGridColumn Header Style  -->
+                                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Height" Value="40" />
+                                                <!--  ToolTip  -->
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="ToolTip" Value="{Binding Path=Column.(ToolTipService.ToolTip), RelativeSource={RelativeSource Self}}" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGrid.Resources>
+
+                                        <!--  Columns  -->
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn
+                                                Width="*" MinWidth="120"
+                                                Binding="{Binding VesselName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                FontSize="15" FontWeight="Bold" Header="Name" ToolTipService.ToolTip="Vessel name." />
+
+                                            <DataGridTemplateColumn MinWidth="55" CanUserSort="True" Header="En./Tot." ToolTipService.ToolTip="Enabled / Total recorded voyages.">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                                                            <Label Margin="0,0,-8,0" Content="{Binding NumberOfEnabledVoyages}" Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridCell}}" />
+                                                            <Label Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridCell}}">/</Label>
+                                                            <Label Margin="-8,0,0,0" Content="{Binding Voyages.Count, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGridCell}}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+
+                                            <DataGridTextColumn MinWidth="60" Binding="{Binding VesselEmissions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='N/A', StringFormat=N0}" FontSize="12" Header="Emis." ToolTipService.ToolTip="Voyage CO2 Emissions for enabled voyages.[tons]">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                                        <Setter Property="Margin" Value="0,0,5,0" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                            <DataGridTextColumn MinWidth="60" Binding="{Binding VesselEEOI, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='N/A', StringFormat=N2}" FontSize="12" Header="EEOI" ToolTipService.ToolTip="EEOI for enabled voyages.">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                                        <Setter Property="Margin" Value="0,0,5,0" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                        </DataGrid.Columns>
+
+                                        <!--  Group Style  -->
+                                        <DataGrid.GroupStyle>
+                                            <GroupStyle>
+                                                <GroupStyle.HeaderTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <!--<TextBox Text="{Binding Source={local:EnumBindingSource {x:Type local:VesselTypes}}}"/>-->
+                                                            <TextBlock Text="{Binding Path=VesselType}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </GroupStyle.HeaderTemplate>
+                                                <GroupStyle.ContainerStyle>
+                                                    <Style TargetType="{x:Type GroupItem}">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                                    <Expander>
+                                                                        <Expander.Header>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Path=Name, StringFormat='{}{0}:', Converter={StaticResource VesselTypeConverter}}" />
+                                                                                <TextBlock Margin="5,0,0,0" FontSize="14" FontWeight="Bold" Text="{Binding Path=ItemCount}" />
+                                                                                <TextBlock Margin="5,0" FontSize="14" FontWeight="Bold" Text="vessels." />
+                                                                            </StackPanel>
+                                                                        </Expander.Header>
+                                                                        <ItemsPresenter />
+                                                                    </Expander>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </GroupStyle.ContainerStyle>
+                                            </GroupStyle>
+                                        </DataGrid.GroupStyle>
+
+                                        <!--  Context Menu  -->
+                                        <DataGrid.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Click="mnuGroupVesselType_Click" Header="Group by Vessel's Type" />
+                                                <MenuItem Click="mnuGroupVesselFlag_Click" Header="Group by Vessel's Flag" />
+                                                <MenuItem Click="mnuUnGroupDGV0_Click" Header="UnGroup" />
+
+                                            </ContextMenu>
+                                        </DataGrid.ContextMenu>
+
+
+                                    </DataGrid>
+                                </Border>
+                            </DockPanel>
+                            <DockPanel Grid.Row="0" Grid.Column="2" Margin="10">
+                                <StackPanel DataContext="{Binding ElementName=DGV0, Path=SelectedItem}" DockPanel.Dock="Top" Orientation="Horizontal">
+                                    <Label Content="{Binding VesselName, FallbackValue='---'}" ContentStringFormat="Voyages of Vessel: {0}" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+
+                                </StackPanel>
+
+
+                                <Border Margin="10,0" CornerRadius="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="8" Color="Gray" />
+                                    </Border.Effect>
+                                    <DataGrid
+                                        x:Name="DGV1"
+                                        AlternatingRowBackground="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"
+                                        AutoGenerateColumns="False" Background="#FFEEECEC" CellEditEnding="DGV1_CellEditEnding"
+                                        CellStyle="{DynamicResource DataGridCellStyle1}"
+                                        ClipboardCopyMode="IncludeHeader"
+                                        DataContext="{Binding ElementName=DGV0, Path=SelectedItem}"
+                                        HorizontalGridLinesBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                                        ItemsSource="{Binding Voyages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        PreviewKeyUp="DGV1_PreviewKeyUp" UnloadingRow="DGV1_UnloadingRow"
+                                        VerticalGridLinesBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+
+                                        <!--  Resources  -->
+                                        <DataGrid.Resources>
+                                            <!--<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"  Color="#FF0000"/>-->
+
+                                            <!--  Enumerator object provider  -->
+                                            <ObjectDataProvider x:Key="EnumVoyage" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                                                <ObjectDataProvider.MethodParameters>
+                                                    <x:TypeExtension TypeName="local:VoyageTypes" />
+                                                </ObjectDataProvider.MethodParameters>
+                                            </ObjectDataProvider>
+
+                                            <!--  DataGridRow Validation Error Template  -->
+                                            <Style TargetType="{x:Type DataGridRow}">
+                                                <Setter Property="ValidationErrorTemplate">
+                                                    <Setter.Value>
+                                                        <ControlTemplate>
+                                                            <Image Width="20" Height="20" Margin="0" IsEnabled="True" Source="Resources/image_error.png" ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+
+                                            <!--  DataGridColumn Header Style  -->
+                                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Height" Value="40" />
+                                                <!--  ToolTip  -->
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="ToolTip" Value="{Binding Path=Column.(ToolTipService.ToolTip), RelativeSource={RelativeSource Self}}" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGrid.Resources>
+
+                                        <!--  Columns  -->
+                                        <DataGrid.Columns>
+
+                                            <DataGridTextColumn MinWidth="50" Binding="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" FontWeight="Bold" Header="Id" ToolTipService.ToolTip="ID of the Voyage." />
+
+                                            <DataGridTemplateColumn MinWidth="60" CanUserSort="True" Header="En./Dis." ToolTipService.ToolTip="Enable/Disable voyage for EEOI rolling average calculation.">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <CheckBox Click="DGV1_CheckBox_Click" IsChecked="{Binding IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTextColumn MinWidth="100" Binding="{Binding DeparturePort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Departure Port" ToolTipService.ToolTip="Departure port." />
+
+                                            <DataGridTemplateColumn MinWidth="90" CanUserSort="True" Header="End Date" SortMemberPath="CompletedDate" ToolTipService.ToolTip="Date considered as the end of voyage.">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <DatePicker SelectedDate="{Binding CompletedDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <!--<DataGridTemplateColumn MinWidth="80" CanUserSort="True" Header="Voy. Type" SortMemberPath="VoyageType" ToolTipService.ToolTip="Voyage type.">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox DropDownClosed="DGV1_ComboBox_DropDownClosed" ItemsSource="{Binding Source={StaticResource EnumVoyage}}" SelectedItem="{Binding VoyageType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>-->
+
+                                            <DataGridTextColumn MinWidth="80" Binding="{Binding Distance, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N1}" Header="Distance" ToolTipService.ToolTip="Distance travelled in [n.miles].">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+
+                                            <DataGridTextColumn MinWidth="80" Binding="{Binding CargoMass, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N1}" Header="Cargo Mass" ToolTipService.ToolTip="Cargo carried [tons] or work done [number of TEU or passengers] or gross tons for passenger ships.">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+
+                                            <DataGridTextColumn Width="*" MinWidth="140" Binding="{Binding Remarks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Remarks" ToolTipService.ToolTip="Remarks." />
+
+
+                                        </DataGrid.Columns>
+
+                                        <!--  Context Menu  -->
+                                        <DataGrid.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Click="mnuGroupId_Click" Header="Group by Id" />
+                                                <MenuItem Click="mnuGroupPort_Click" Header="Group by Departure Port" />
+                                                <MenuItem Click="mnuGroupVoyageType_Click" Header="Group by Voyage Type" />
+                                                <MenuItem Click="mnuGroupDistance_Click" Header="Group by Distance" />
+                                                <MenuItem Click="mnuGroupCargoMass_Click" Header="Group by Cargo Mass" />
+                                                <MenuItem Click="mnuUnGroup_Click" Header="UnGroup" />
+                                                <Separator />
+                                                <MenuItem Click="mnuEnableAllSelected_Click" Header="Enable Selected" />
+                                                <MenuItem Click="mnuDisableAllSelected_Click" Header="Disable Selected" />
+                                                <MenuItem Click="mnuEnableAll_Click" Header="Enable All" />
+                                                <MenuItem Click="mnuDisableAll_Click" Header="Disable All" />
+                                            </ContextMenu>
+                                        </DataGrid.ContextMenu>
+
+                                        <!--  Group Style  -->
+                                        <DataGrid.GroupStyle>
+                                            <GroupStyle>
+                                                <GroupStyle.HeaderTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding Path=Id}" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </GroupStyle.HeaderTemplate>
+                                                <GroupStyle.ContainerStyle>
+                                                    <Style TargetType="{x:Type GroupItem}">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                                    <Expander>
+                                                                        <Expander.Header>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Path=Name, StringFormat='{}{0}:'}" />
+                                                                                <TextBlock Margin="5,0,0,0" FontSize="14" FontWeight="Bold" Text="{Binding Path=ItemCount}" />
+                                                                                <TextBlock Margin="5,0" FontSize="14" FontWeight="Bold" Text="entries." />
+                                                                            </StackPanel>
+                                                                        </Expander.Header>
+                                                                        <ItemsPresenter />
+                                                                    </Expander>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </GroupStyle.ContainerStyle>
+                                            </GroupStyle>
+                                        </DataGrid.GroupStyle>
+                                    </DataGrid>
+                                </Border>
+                            </DockPanel>
+                            <DockPanel Grid.Row="2" Grid.Column="2" Margin="10" DataContext="{Binding ElementName=DGV1, Path=SelectedItem, UpdateSourceTrigger=PropertyChanged}" LastChildFill="true">
+
+                                <Label Content="{Binding Id, FallbackValue='---'}" ContentStringFormat="Consumed Fuel of voyage: {0}" DockPanel.Dock="Top" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                <Border Margin="10,0" CornerRadius="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="8" Color="Gray" />
+                                    </Border.Effect>
+                                    <DataGrid
+                                        x:Name="DGV2"
+                                        AlternatingRowBackground="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"
+                                        AutoGenerateColumns="False" Background="#FFEEECEC" CanUserAddRows="True" CellEditEnding="DGV2_CellEditEnding"
+                                        CellStyle="{DynamicResource DataGridCellStyle1}"
+                                        ClipboardCopyMode="IncludeHeader"
+                                        DataContext="{Binding ElementName=DGV1, Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
+                                        DockPanel.Dock="Top"
+                                        HorizontalGridLinesBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                                        ItemsSource="{Binding Consumptions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        PreviewKeyUp="DGV2_PreviewKeyUp" UnloadingRow="DGV2_UnloadingRow"
+                                        VerticalGridLinesBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+
+                                        <!--  Resources  -->
+                                        <DataGrid.Resources>
+                                            <!--  Enumerator object provider  -->
+                                            <ObjectDataProvider x:Key="EnumFuel" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                                                <ObjectDataProvider.MethodParameters>
+                                                    <x:TypeExtension TypeName="local:FuelTypes" />
+                                                </ObjectDataProvider.MethodParameters>
+                                            </ObjectDataProvider>
+
+                                            <!--  DataGridRow Validation Error Template  -->
+                                            <Style TargetType="{x:Type DataGridRow}">
+                                                <Setter Property="ValidationErrorTemplate">
+                                                    <Setter.Value>
+                                                        <ControlTemplate>
+                                                            <Image Width="20" Height="20" Margin="0" IsEnabled="True" Source="Resources/image_error.png" ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}" />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+
+                                            <!--  DataGridColumn Header Style  -->
+                                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                                <Setter Property="Height" Value="40" />
+
+                                                <!--  ToolTip  -->
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="ToolTip" Value="{Binding Path=Column.(ToolTipService.ToolTip), RelativeSource={RelativeSource Self}}" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGrid.Resources>
+
+                                        <!--  Columns  -->
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn MinWidth="80" Binding="{Binding FC, Mode=TwoWay, StringFormat=N1, UpdateSourceTrigger=LostFocus}" Header="Fuel Consumed" ToolTipService.ToolTip="Fuel mass consumed during voyage, [tons].">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+
+
+                                            <DataGridTemplateColumn MinWidth="130" CanUserSort="True" Header="Fuel Type" SortMemberPath="FuelType" ToolTipService.ToolTip="Fuel type burned during voyage.">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox DropDownClosed="DGV2_ComboBox_DropDownClosed" ItemsSource="{Binding Source={StaticResource EnumFuel}}" SelectedItem="{Binding FuelType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+
+                                            <DataGridTextColumn MinWidth="80" Binding="{Binding Cf, UpdateSourceTrigger=PropertyChanged, StringFormat=N5}" Header="CO2 Factor" IsReadOnly="True" ToolTipService.ToolTip="CO2 conversion factor.">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+
+                                            <DataGridTextColumn MinWidth="60" Binding="{Binding Emission, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Header="CO2 Emissions" IsReadOnly="True" ToolTipService.ToolTip="CO2 emmisions [tons].">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+
+                                            <DataGridTextColumn Width="*" MinWidth="150" Binding="{Binding Remarks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Remarks" ToolTipService.ToolTip="Remarks." />
+
+                                        </DataGrid.Columns>
+
+                                    </DataGrid>
+                                </Border>
+                            </DockPanel>
+                            <DockPanel Grid.Row="2" Grid.Column="0">
+
+                                <StackPanel x:Name="spResults" Margin="10" DataContext="{Binding ElementName=DGV1, Path=SelectedItem, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top" Orientation="Vertical">
+                                    <Label Content="{Binding Id}" ContentStringFormat="Details of voyage: {0}" DockPanel.Dock="Top" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                    <Label Content="{Binding VoyageEEOI, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="Voyage EEOI: {0:N2} [grCO2 / ton x n.mile]" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                    <Label Content="{Binding VoyageEmissions, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="Voyage CO2 Emissions: {0:N1} [tons CO2]" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+
+                                </StackPanel>
+
+                            </DockPanel>
+
+                        </Grid>
+                    </Border>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="EEOI Graphs">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Rectangle Width="12" Height="12" Margin="10,0,0,0" Fill="#FFCE1241" RadiusX="2" RadiusY="2" />
+                        <Label Margin="0,0,10,0" Content="EEOI and EEOI Rolling Average Graphs." FontSize="14" FontWeight="Bold" />
+                    </StackPanel>
+                    <Border Margin="10,0,10,10">
+                        <DockPanel Margin="20" LastChildFill="True">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*" MinHeight="200" />
+                                    <RowDefinition Height="5" />
+                                    <RowDefinition Height="1*" MinHeight="200" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.2*" MinWidth="150" />
+                                    <ColumnDefinition Width="5" />
+                                    <ColumnDefinition Width="4*" MinWidth="400" />
+                                </Grid.ColumnDefinitions>
+                                <GridSplitter Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+                                <GridSplitter Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Height="5" HorizontalAlignment="Stretch" />
+
+                                <DockPanel Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0,0,10,10">
+                                    <Label Content="Vessels:" DockPanel.Dock="Top" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                    <Border CornerRadius="0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="10" ShadowDepth="8" Color="Gray" />
+                                        </Border.Effect>
+                                        <ListBox x:Name="lbVessels2" ItemContainerStyle="{StaticResource lbStyle1}" ItemsSource="{Binding Vessels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Extended">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <CheckBox
+                                                            x:Name="cbVessel" Margin="5,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center" Checked="cbVessel_Checked"
+                                                            Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}"
+                                                            IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            Unchecked="cbVessel_Unchecked" />
+                                                        <Label Content="{Binding VesselName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" />
+                                                        <Label Content="{Binding NumberOfEnabledVoyages}" ContentStringFormat="Voyages: {0}/" Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" />
+                                                        <Label Margin="-10,0,0,0" Content="{Binding Voyages.Count}" Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+
+                                            <!--  Context Menu  -->
+                                            <ListBox.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Click="mnuVesselEnableAllSelected_Click" Header="Enable Selected" />
+                                                    <MenuItem Click="mnuVesselDisableAllSelected_Click" Header="Disable Selected" />
+                                                    <Separator />
+                                                    <MenuItem Click="mnuVesselEnableAll_Click" Header="Enable All" />
+                                                    <MenuItem Click="mnuVesselDisableAll_Click" Header="Disable All" />
+                                                </ContextMenu>
+                                            </ListBox.ContextMenu>
+
+                                        </ListBox>
+                                    </Border>
+                                </DockPanel>
+                                <DockPanel Grid.Row="0" Grid.Column="2" Margin="10,0,10,10">
+                                    <Label Content="EEOI Graphs:" DockPanel.Dock="Top" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                    <Border CornerRadius="0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="10" ShadowDepth="8" Color="Gray" />
+                                        </Border.Effect>
+                                        <oxy:PlotView x:Name="GraphEEOI" />
+                                    </Border>
+                                </DockPanel>
+                                <DockPanel Grid.Row="2" Grid.Column="2" Margin="10,0,10,10">
+                                    <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                                        <Label Content="EEOI Rolling Average Graphs:" DockPanel.Dock="Left" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                        <CheckBox
+                                            x:Name="cbHasReg" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="cbHasReg_Checked"
+                                            DataContext="{Binding ElementName=lbVessels2, Path=SelectedItem}"
+                                            DockPanel.Dock="Right"
+                                            IsChecked="{Binding HasReg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Unchecked="cbHasReg_Unchecked" />
+                                        <Label Content="Trend Line:" DockPanel.Dock="Right" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                        <TextBox
+                                            x:Name="tbPeriod" Width="40" Margin="5" HorizontalContentAlignment="Center" DockPanel.Dock="Right" PreviewKeyUp="tbPeriod_PreviewKeyUp"
+                                            Text="{Binding PeriodLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Label Content="Rolling Average period in number of voyages:" DockPanel.Dock="Right" FontSize="14" FontWeight="Bold" Foreground="DarkGray" />
+                                    </DockPanel>
+                                    <Border CornerRadius="0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="10" ShadowDepth="8" Color="Gray" />
+                                        </Border.Effect>
+                                        <oxy:PlotView x:Name="GraphEEOIrv" />
+                                    </Border>
+                                </DockPanel>
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+
+</Window>
